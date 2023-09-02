@@ -2441,13 +2441,25 @@ input[type="radio"] + label:before {
 }
 
 .image.fit {
-  display: block;
   margin: 0 0 2em 0;
-  width: 100%;
+  width: 50%;
 }
 
-.image.fit img {
-  width: 100%;
+.image.fit.big {
+  width: 75%;
+}
+
+@media screen and (max-width: 736px) {
+  .image.fit,
+  .image.fit.big {
+    width: 100%;
+  }
+}
+
+.image.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .image.main {

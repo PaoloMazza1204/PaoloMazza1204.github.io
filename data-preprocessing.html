@@ -60,19 +60,228 @@
             alt="A set of puzzle pieces with a missing one"
           />
           <p>
-            Data preprocessing is a critical step in Machine Learning, also,
+            Data preprocessing is a critical step in Machine Learning. Also,
             it's one of the first steps when building a model, so I figured it
             would be a great place to start.
           </p>
           <p>
             In this section, I show you my first look at data preprocessing
-            under the gaze of Machine Learning. I apply techniques such as
-            normalization, outlier detection and show you different ways of
-            handling missing values on a dataset (selecting a subset of
-            attributes, filtering examples, replacing missing values, amongst
-            others). All of this using
+            under the gaze of Machine Learning. I discuss data inspection and
+            its importance, attribute selection and I also show you three really
+            basic ways of handling missing values on datasets. All of this using
             <a href="https://rapidminer.com/">RapidMiner Studio</a> and its wide
             variety of useful operators.
+          </p>
+
+          <h2>Dataset Inspection</h2>
+
+          <p>
+            The first step when solving a problem is gaining knowledge about it,
+            understanding it and its parameters, as well as recognizing what a
+            complete solution should include or even look like; the process
+            involved in building a Machine Learning model is no exception. This
+            is, precisely, why data inspection is such a decisive and thus
+            important step; first, we must get to know what data we have, its
+            strucure, the attributes involved in the problem and their types, as
+            well as what they represent or mean in the context of the problem.
+          </p>
+
+          <p>
+            In RapidMiner Studio, inspecting data is a really simple task. Once
+            we have access to the dataset involved in the problem, we can easily
+            import it to a repository and then retrieve it using the
+            <strong>retrieve</strong> operator. After connecting the output port
+            of the retrieve operator to the output of the process being built,
+            we can take a look at some highlights of the dataset, statistics,
+            and more. The following image shows how to create a process that
+            retrieves the Titanic dataset found in the
+            <strong>/samples/data</strong> folder in RapidMiner Studio:
+          </p>
+
+          <div class="image container">
+            <img
+              class="image fit"
+              src="/images/data-pre-processing-retrieve.png"
+              alt="A RapidMiner Studio process with a Retrieve operator connected to the output port."
+            />
+          </div>
+
+          <p>By running the previous process we see the following results:</p>
+
+          <div class="image container">
+            <img
+              class="image fit big"
+              src="/images/data-pre-processing-retrieve-result.png"
+              alt="The result of the previous process."
+            />
+          </div>
+
+          <p>
+            And as simple as that, we can already see a lot of useful
+            information, i.e, that the dataset has 1309 examples, we can see all
+            the attributes and their types, as well as the amount of missing
+            values, and statistics like minimum, maximum, least, most, average,
+            etc. Also, by selecting an attribute we can take a look at its
+            distribution, which is super helpful to determine if we should do a
+            transformation, in the event that the model we plan to use expects
+            the attributes to have a Gaussian like distribution.
+          </p>
+
+          <p>
+            In this particular example, one of the things we notice is the big
+            amount of missing values for the Cabin attribute; there are 1014 out
+            of 1309 examples with a missing value for this attribute, this is
+            approximately 78%! We'll definitely have to handle this someway
+            before feeding it to the model. In addition, Age seems to have 263
+            missing values, not as much as Cabin, but truly something
+            considerable.
+          </p>
+
+          <p>
+            All this information extraction and more, we can do with just taking
+            a look at the statistics tab, but we can actually see the statistics
+            via graphics in the <strong>Visualizations</strong> tab, which
+            provides us with a lot of different graphs that can help us
+            understand more about the data and its attributes' distributions and
+            relations.
+          </p>
+
+          <p>
+            Notice that I did't mention the 823 missing values for the Life Boat
+            attribute when discussing the missing values. This is because we can
+            clearly see that this attribute shouldn't be included in the model,
+            because it's highly correlated with the Survived attribute. This
+            makes sense if you think about it, due to the fact that those who
+            don't have a Life Boat assigned (missing value), didn't reach the
+            moment at which they get to one, sadly. But also notice that having
+            a life boat assigned doesn't imply survival necessarily. All of this
+            important reasoning wouldn't be possible if it wasn't for problem
+            understanding, data understanding and, at the end of the day, data
+            inspection.
+          </p>
+
+          <h2>Attribute Selection</h2>
+
+          <p>
+            After understanding the problem and its parameters involved, we are
+            in proper conditions to start pruning the dataset in order to
+            benefit our model. Attribute selection is one of the next steps
+            after retrieving a dataset, and it means just that: selecting
+            attributes. Basically, by selecting attributes we discard the ones
+            that we consider are irrelevant, or maybe we actually think that a
+            specific attribute is relevant, but it has too many missing values,
+            as is the case of Cabin. Selecting attributes in RapidMiner Studio
+            is as simple as inserting a
+            <strong>Select Attributes</strong> operator in the process and
+            properly connecting it. Based on the previous RapidMiner Studio
+            process, we would insert this operator like so:
+          </p>
+
+          <div class="image container">
+            <img
+              class="image fit"
+              src="/images/data-pre-processing-select.png"
+              alt="The previous RapidMiner Studio process with the addition of the Select operator"
+            />
+          </div>
+
+          <p>
+            Playing a bit with the operator's parameters, we can select just one
+            attribute, a subset, the ones that match a regular expression, etc.
+            In our example, we could select a subset of attributes,
+            specifically, all but Cabin and Life Boat, following the reasoning
+            so far.
+          </p>
+
+          <h2>Techniques to Handle Missing Values</h2>
+
+          <p>
+            When it comes to handling missing values, there are different
+            techniques we can make use of, here, I show how we would do three
+            really basic ones: Attribute Removal, Imputation and Examples
+            Filtering.
+          </p>
+
+          <h3>Attribute Removal</h3>
+
+          <p>
+            This technique should sound familiar, especially because I just
+            talked about Attribute selection. Inherently, when we are selecting
+            attributes, we are getting rid of the ones we are not selecting. So,
+            just like attribute selection helps us to get rid of the attributes
+            we don't perceive as helpful or relevant, it's also a way of getting
+            rid of attributes that have too many missing values.
+          </p>
+
+          <h3>Imputation</h3>
+
+          <p>
+            Basically, imputation consists of replacing missing values for a
+            valid one. This replacement value could be the mean, mode, minimum,
+            maximum, a specificied one or even the k-nn, amongst others.
+          </p>
+
+          <p>
+            To replace missing values in RapidMiner Studio, there's the operator
+            named
+            <strong>Replace Missing Values</strong>. Following the example
+            process so far, we could add it after selecting attributes, like so:
+          </p>
+
+          <div class="image container">
+            <img
+              class="image fit"
+              src="/images/data-pre-processing-replace.png"
+              alt="The previous RapidMiner Studio process with the addition of the Replace Missing Values operator."
+            />
+          </div>
+
+          <p>
+            This operator lets us replace the missing values for a specific
+            attribute, a subset of them, amongs other options like using a regex
+            to match the attribute's name. As we can see in the following image,
+            the <strong>Replace Missing Values</strong> operator lets us replace
+            the missing values with the mean, minimum, maximum, zero, or we can
+            even specify a value.
+          </p>
+
+          <div class="image container">
+            <img
+              class="image fit"
+              src="/images/data-pre-processing-replace-parameters.png"
+              alt="The parameters of the Replace Missing Values operator."
+            />
+          </div>
+
+          <h3>Examples Filtering</h3>
+
+          <p>
+            Filtering examples is another way of handling missing values. This
+            technique consists of getting rid of the examples that have missing
+            values. As you can imagine, it's something that we would generally
+            avoid, as getting rid of examples equals getting rid of information,
+            and generally, the more information, the better. Nevertheless, it
+            can be useful since not all the machine learning algorithms can
+            handle missing values. In RapidMiner Studio, we can filter examples
+            with the operator <strong>Filter Examples</strong>, which would be
+            attached to the process we've worked on so far, just like so:
+          </p>
+
+          <div class="image container">
+            <img
+              class="image fit"
+              src="/images/data-pre-processing-filter-examples.png"
+              alt="The previous RapidMiner Studio process with the addition of the Filter Examples operator."
+            />
+          </div>
+
+          <h2>Conclusion</h2>
+
+          <p>
+            These were my first steps on data preprocessing. We discussed the
+            importance of understanding the problem and the dataset, and I've
+            shown you the first three techniques I encountered when it comes to
+            handling missing values.
           </p>
         </div>
       </div>
