@@ -2462,6 +2462,11 @@ input[type="radio"] + label:before {
   align-items: center;
 }
 
+.image.section {
+  aspect-ratio: 3;
+  width: 100%;
+}
+
 .image.main {
   display: block;
   margin: 0 0 3em 0;
