@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+  <head>
+    <title>Paolo Mazza - ML Portfolio</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript
+      ><link rel="stylesheet" href="assets/css/noscript.css"
+    /></noscript>
+  </head>
+  <body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+      <!-- Header -->
+      <header id="header">
+        <div class="inner">
+          <!-- Logo -->
+          <a href="index.html" class="logo">
+            <span class="symbol"><img src="images/logo.svg" alt="" /></span
+            ><span class="title">Machine Learning Portfolio</span>
+          </a>
+
+          <!-- Nav -->
+          <!-- <nav>
+            <ul>
+              <li><a href="#menu">Menu</a></li>
+            </ul>
+          </nav> -->
+        </div>
+      </header>
+
+      <!-- Menu -->
+      <!-- <nav id="menu">
+        <h2>Menu</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="generic.html">Ipsum veroeros</a></li>
+          <li><a href="generic.html">Tempus etiam</a></li>
+          <li><a href="generic.html">Consequat dolor</a></li>
+          <li><a href="elements.html">Elements</a></li>
+        </ul>
+      </nav> -->
+
+      <!-- Main -->
+      <div id="main">
+        <div class="inner">
+          <h1>Logistic Regression to Predict a Second Heart Attack</h1>
+          <div class="image container">
+            <img
+              class="image section"
+              src="images/medical-equipment.avif"
+              alt=""
+            />
+          </div>
+          <p>
+            In this case study I build a logistic regression model that predicts
+            a possible second heart attack on people, given the person's age,
+            marital status, sex, weight category, cholesterol, whether or not
+            the subject has attended to stress management courses and lastly,
+            natural stress level.
+          </p>
+
+          <h2>Importing Libraries Needed</h2>
+
+          <p>
+            To start off, we import the libraries that we are going to use
+            throughout the notebook. As we are interested in handling the
+            dataset as a dataframe created with pandas, we are going to import
+            pandas. Also, We are going to need the LogisticRegression model from
+            sklearn, as well as confusion_matrix and classification_report
+            methods to take a look at the model's performance after its
+            training. We'll also need the train_test_split utility method to
+            easily split the dataset into training and testing sets. Lastly, so
+            you can replicate this notebook, I'm importing gdown so you can use
+            the datasets I've used when creating this notebook.
+          </p>
+
+          <p>These libraries are imported in the following code block.</p>
+
+          <pre><code>import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.model_selection import train_test_split
+import gdown</code></pre>
+
+          <h2>Loading the Dataset</h2>
+
+          <p>
+            The following simple code block loads the dataset into the
+            environment, making it readily available to use.
+          </p>
+
+          <pre><code>training_url = 'https://drive.google.com/uc?id=1n5AKFwFMNjRBLSRtPkJeiOZpDDwDZkkY'
+scoring_url = 'https://drive.google.com/uc?id=1sKY9L26G7kONYymG_sP0k6yxJOYpLSS9'
+training_path = 'cardiac-training.csv'
+scoring_path = 'cardiac-scoring.csv'
+
+# Download datasets
+gdown.download(training_url, training_path, quiet=False)
+gdown.download(scoring_url, scoring_path, quiet=False)</code></pre>
+
+          <h2>Analyzing the Dataset</h2>
+
+          <p>
+            Now that we've imported the libraries needed and loaded the dataset,
+            we are ready to get to the nitty gritty. Let's start with taking a
+            look at the data. To do this, we use pandas to load the csv to a
+            data frame and print its list of columns.
+          </p>
+
+          <pre><code>df = pd.read_csv(training_path, header=0)
+print(df.columns)</code></pre>
+
+          <p>This outputs the following.</p>
+
+          <pre><code>Index(['Edad', 'Estado_civil', 'Sexo', 'Categoria_Peso', 'Colesterol',
+'Manejo_stress', 'Trat_ansiedad', '2do_Ataque_Corazon'],
+dtype='object')</code></pre>
+
+          <p>
+            These are the spanish names for the attributes described at the
+            introduction of this notebook, respectively. In addition, we have
+            our label as the last column printed; '2do_Ataque_Corazon', which
+            stands for second heart attack.
+          </p>
+
+          <p>
+            This is the moment when we should ask ourselves if there's any
+            attribute we should get rid of due to its meaning in the context of
+            the problem we are trying to solve. Seems like every attribute could
+            provide useful information when trying to predict if someone would
+            have a second heart attack —although some may doubt about marital
+            status, we are going to keep it.
+          </p>
+
+          <p>
+            We can overview some of the dataset's examples by printing the
+            dataframe's values like so.
+          </p>
+
+          <pre><code>print(df.values)</code></pre>
+
+          <pre><code>[[60 2 0 ... 1 50 'Si']
+[69 2 1 ... 0 60 'Si']
+[52 1 0 ... 1 35 'No']
+...
+[55 3 0 ... 1 45 'No']
+[73 2 1 ... 0 60 'Si']
+[62 3 0 ... 1 65 'No']]</code></pre>
+
+          <h2>Splitting the Dataset</h2>
+
+          <p>
+            Before training the model, we need to split the dataset into
+            training and testing sets. To do this, we'll use the
+            train_test_split method with a test ratio of 0.3.
+          </p>
+
+          <pre><code>train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.30, random_state=0, shuffle=True)</code></pre>
+
+          <h2>Training the Logistic Regression Model</h2>
+
+          <p>
+            We now create the logistic regression model and train it using the
+            fit method.
+          </p>
+
+          <pre><code>lr = LogisticRegression()
+lr = lr.fit(train_X, train_y)</code></pre>
+
+          <h2>Scoring</h2>
+
+          <p>Let's take a look at the model's performance.</p>
+
+          <pre><code>y_pred = lr.predict(test_X)
+print("Predicted vs Expected")
+print(y_pred)
+print(test_y)</code></pre>
+
+          <pre><code>Predicted vs Expected
+['No' 'Si' 'No' 'No' 'Si' 'No' 'Si' 'Si' 'Si' 'No' 'Si' 'Si' 'Si' 'No'
+ 'No' 'Si' 'Si' 'Si' 'Si' 'Si' 'Si' 'No' 'No' 'Si' 'Si' 'Si' 'Si' 'No'
+ 'No' 'Si' 'No' 'No' 'Si' 'No' 'Si' 'No' 'Si' 'Si' 'Si' 'No' 'Si' 'No']
+['No' 'Si' 'No' 'No' 'Si' 'No' 'Si' 'Si' 'Si' 'No' 'Si' 'Si' 'Si' 'No'
+ 'No' 'Si' 'Si' 'Si' 'No' 'Si' 'Si' 'No' 'No' 'No' 'Si' 'Si' 'Si' 'Si'
+ 'No' 'Si' 'No' 'No' 'Si' 'No' 'Si' 'No' 'Si' 'No' 'Si' 'No' 'Si' 'No']</code></pre>
+
+          <p>
+            Taking a look at the previous lists, we can see that the model made
+            just a few mistakes. Let's take a look at the classification report.
+          </p>
+
+          <pre><code>print(classification_report(test_y, y_pred, digits=3))</code></pre>
+
+          <pre><code>              precision    recall  f1-score   support
+
+          No      0.941     0.842     0.889        19
+          Si      0.880     0.957     0.917        23
+
+    accuracy                          0.905        42
+   macro avg      0.911     0.899     0.903        42
+weighted avg      0.908     0.905     0.904        42</code></pre>
+
+          <p>
+            The classification report shows that the results obtained are
+            decent. We can also see where these metrics came from by taking a
+            look at the confusion matrix.
+          </p>
+
+          <pre><code>print(confusion_matrix(test_y, y_pred))</code></pre>
+
+          <pre><code>[[16  3]
+[ 1 22]]</code></pre>
+
+          <p>
+            The confusion matrix shows 16 cases of true positives, 3 cases of
+            false positives, 1 case of a false negative and 22 cases of true
+            negatives.
+          </p>
+
+          <h2>Conclusion</h2>
+
+          <p>
+            Using Python and some basic modules from sklearn, we were able to
+            load a dataset, analyze it, split it into training and testing sets
+            to then fit a logistic regression model. Lastly, we analyzed the
+            model's performance by taking a look at some basic metrics like
+            precision, recall, f1-score and accuracy, as well as the confusion
+            matrix.
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer id="footer">
+        <div class="inner">
+          <section>
+            <h2>Follow</h2>
+            <ul class="icons">
+              <li>
+                <a
+                  href="https://linkedin.com/in/paolo-mazza-662005203"
+                  class="icon brands style2 fa-linkedin"
+                  ><span class="label">Facebook</span></a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/PaoloMazza1204"
+                  class="icon brands style2 fa-github"
+                  ><span class="label">GitHub</span></a
+                >
+              </li>
+            </ul>
+          </section>
+          <ul class="copyright">
+            <li>&copy; Paolo Mazza. All rights reserved</li>
+            <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
