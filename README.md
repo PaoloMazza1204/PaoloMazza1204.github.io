@@ -4,12 +4,17 @@ I'm currently taking a machine learning course, and this is the portfolio where 
 
 ## Current status - 🚧 WIP 🚧 🔨👷🏼‍♂️
 
-At the moment, the portfolio contains the following two sections.
+At the moment, the portfolio contains the following sections.
 
 ### First Steps 👣
 
-In this section I'll upload my first steps in machine learning. For now, it just contains the page Data Preprocessing.
+In this section I'll upload my first steps in machine learning. For now, it contains the page:
+
+- Data Preprocessing.
 
 ### Case Studies 🔎
 
-In this section I'll upload my case studies. For now, it just contains the page Prediction of Titanic Survivors.
+In this section I'll upload my case studies. For now, it contains the next case studies:
+
+- Prediction of Titanic Survivors
+- Prediction of a Second Heart Attack
