@@ -18,3 +18,4 @@ In this section I'll upload my case studies. For now, it contains the next case 
 
 - Prediction of Titanic Survivors
 - Prediction of a Second Heart Attack
+- Linear Discriminant Analysis
