@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+  <head>
+    <title>Linear Discriminant Analysis</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript
+      ><link rel="stylesheet" href="assets/css/noscript.css"
+    /></noscript>
+  </head>
+  <body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+      <!-- Header -->
+      <header id="header">
+        <div class="inner">
+          <!-- Logo -->
+          <a href="index.html" class="logo">
+            <span class="symbol"><img src="images/logo.svg" alt="" /></span
+            ><span class="title">Machine Learning Portfolio</span>
+          </a>
+
+          <!-- Nav -->
+          <!-- <nav>
+            <ul>
+              <li><a href="#menu">Menu</a></li>
+            </ul>
+          </nav> -->
+        </div>
+      </header>
+
+      <!-- Menu -->
+      <!-- <nav id="menu">
+        <h2>Menu</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="generic.html">Ipsum veroeros</a></li>
+          <li><a href="generic.html">Tempus etiam</a></li>
+          <li><a href="generic.html">Consequat dolor</a></li>
+          <li><a href="elements.html">Elements</a></li>
+        </ul>
+      </nav> -->
+
+      <!-- Main -->
+      <div id="main">
+        <div class="inner">
+          <h1>Linear Discriminant Analysis</h1>
+          <div class="image container">
+            <img
+              class="image section"
+              src="images/birds-on-cables.avif"
+              alt=""
+            />
+          </div>
+          <p>
+            In this case study I build an LDA model that classifies points on
+            one of two classes. This case study is based on a sample dataset
+            that defines two classes of points.
+          </p>
+
+          <h2>Importing Libraries Needed</h2>
+
+          <p>
+            We kick off this case by importing the libraries needed throughout
+            the notebook, which are: pandas, matplotlib, the
+            LinearDiscriminantAnalysis model from sklearn, confusion_matrix and
+            classification_report methods to take a look at the model's
+            performance after its training, train_test_split method from
+            sklearn, and gdown to download the dataset.
+          </p>
+
+          <p>These libraries are imported in the following code block.</p>
+
+          <pre><code>import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.model_selection import train_test_split
+import gdown</code></pre>
+
+          <h2>Loading the Dataset</h2>
+
+          <p>
+            The following code block loads the dataset into the environment.
+          </p>
+
+          <pre><code>dataset_url = 'https://drive.google.com/uc?id=11qkRC6nsz-spY7uKGYa1OCTiK3VJOc4B'
+dataset_path = 'sample.csv'
+
+# Download dataset
+gdown.download(dataset_url, dataset_path, quiet=False)</code></pre>
+
+          <p>Now, we read the dataset and store it in a dataframe.</p>
+
+          <pre><code>df = pd.read_csv(dataset_path, header=0)</code></pre>
+
+          <h2>Analyzing the Dataset</h2>
+
+          <p>Let's plot the data to analyze it</p>
+
+          <pre><code>colors = ("orange", "blue")
+plt.scatter(df['x'], df['y'], s=300, c=df['label'],cmap=matplotlib.colors.ListedColormap(colors))
+plt.show()</code></pre>
+
+          <p>This outputs the following plot.</p>
+
+          <pre><code><img src="/images/lda-scatter-plot.png" alt=""></code></pre>
+
+          <p>
+            We can clearly see on the displayed plot that the points constitute
+            two classes, differentiated by the points' color.
+          </p>
+
+          <h2>Splitting the Dataset</h2>
+
+          <p>
+            Before training the model, we need to split the dataset into
+            training and testing sets. To do this, we'll use the
+            train_test_split method with a test ratio of 0.25.
+          </p>
+
+          <pre><code>train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.25, random_state=0, shuffle=True)</code></pre>
+
+          <h2>Training the LDA Model</h2>
+
+          <p>We now create the LDA model and train it using the fit method.</p>
+
+          <pre><code>lda = LinearDiscriminantAnalysis()
+lda = lda.fit(train_X, train_y)</code></pre>
+
+          <h2>Scoring</h2>
+
+          <p>Lastly, we take a look at the model's performance.</p>
+
+          <pre><code>y_pred = lda.predict(test_X)
+print("Predicted vs Expected")
+print(y_pred)
+print(test_y)</code></pre>
+
+          <pre><code>Predicted vs Expected
+[1 0 1 0 1]
+[1 0 1 0 1]</code></pre>
+
+          <p>
+            Taking a look at the previous lists, we can see that the model made
+            no mistakes. However, notice that the lists contain just 5 examples.
+            Let's take a look at the classification report.
+          </p>
+
+          <pre><code>print(classification_report(test_y, y_pred, digits=3))</code></pre>
+
+          <pre><code>              precision    recall  f1-score   support
+
+           0      1.000     1.000     1.000         2
+           1      1.000     1.000     1.000         3
+
+    accuracy                          1.000         5
+   macro avg      1.000     1.000     1.000         5
+weighted avg      1.000     1.000     1.000         5</code></pre>
+
+          <p>
+            The classification report shows that the results obtained are
+            perfect. We can also see where these metrics came from by taking a
+            look at the confusion matrix.
+          </p>
+
+          <pre><code>print(confusion_matrix(test_y, y_pred))</code></pre>
+
+          <pre><code>[[2 0]
+[0 3]]</code></pre>
+
+          <p>
+            The confusion matrix shows 2 cases of true positives, 0 cases of
+            false positives, 0 cases of false negatives and 3 cases of true
+            negatives, resulting in a perfect score.
+          </p>
+
+          <h2>Conclusion</h2>
+
+          <p>
+            Using Python and some basic modules from sklearn and matplotlib, we
+            were able to load a dataset, plot it, analyze it, split it into
+            training and testing sets to then fit an LDA model. Lastly, we
+            analyzed the model's performance by taking a look at some basic
+            metrics like precision, recall, f1-score and accuracy, as well as
+            the confusion matrix.
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer id="footer">
+        <div class="inner">
+          <section>
+            <h2>Follow</h2>
+            <ul class="icons">
+              <li>
+                <a
+                  href="https://linkedin.com/in/paolo-mazza-662005203"
+                  class="icon brands style2 fa-linkedin"
+                  ><span class="label">Facebook</span></a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/PaoloMazza1204"
+                  class="icon brands style2 fa-github"
+                  ><span class="label">GitHub</span></a
+                >
+              </li>
+            </ul>
+          </section>
+          <ul class="copyright">
+            <li>&copy; Paolo Mazza. All rights reserved</li>
+            <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
